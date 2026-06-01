@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lc-orange: #ffa116;
+  --color-lc-orange-hover: #e89300;
+  --color-lc-easy: #00b8a3;
+  --color-lc-medium: #ffc01e;
+  --color-lc-hard: #ff375f;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #262626;
+  --surface: #fafafa;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a1a1a;
+    --foreground: #d1d5db;
+    --surface: #2c2c2c;
+    --border: #3e3e3e;
+    --muted: #9ca3af;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+#root {
+  width: 400px;
+  min-height: 400px;
+  padding: 16px;
+}
+
+@keyframes flipDigit {
+  0% { transform: perspective(60px) rotateX(0deg); }
+  45% { transform: perspective(60px) rotateX(-90deg); }
+  55% { transform: perspective(60px) rotateX(90deg); }
+  100% { transform: perspective(60px) rotateX(0deg); }
+}
+
+.flip-digit {
+  animation: flipDigit 0.3s ease-in-out;
+}
