@@ -77,21 +77,21 @@ export async function setBatchSize(size: number): Promise<void> {
 export async function syncFavorites(
   freshProblems: LeetCodeProblem[],
 ): Promise<{ newPool: LeetCodeProblem[]; newLastDraw: LeetCodeProblem[] }> {
-  const [existingPool, existingLastDraw] = await Promise.all([
+  const [existingPool, existingLastDraw, existingAllProblems] = await Promise.all([
     loadPool(),
     getLastDraw(),
+    loadAllProblems(),
   ])
 
   const freshSlugs = new Set(freshProblems.map((p) => p.titleSlug))
-  const poolSlugs = new Set(existingPool.map((p) => p.titleSlug))
-  const lastDrawSlugs = new Set(existingLastDraw.map((p) => p.titleSlug))
+  const existingSlugs = new Set(existingAllProblems.map((p) => p.titleSlug))
 
   // Step 1: Keep undrawn problems that are still favorited
   const newPool = existingPool.filter((p) => freshSlugs.has(p.titleSlug))
 
-  // Step 2: Add newly favorited problems not yet drawn
+  // Step 2: Add newly favorited problems not previously seen
   freshProblems.forEach((p) => {
-    if (!poolSlugs.has(p.titleSlug) && !lastDrawSlugs.has(p.titleSlug)) {
+    if (!existingSlugs.has(p.titleSlug)) {
       newPool.push(p)
     }
   })

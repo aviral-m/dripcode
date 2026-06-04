@@ -6,5 +6,6 @@ export interface LeetCodeProblem {
 }
 
 export interface FavoriteList {
-  idHash: string
+  slug: string
+  name: string
 }

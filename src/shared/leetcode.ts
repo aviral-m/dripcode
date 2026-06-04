@@ -39,10 +39,11 @@ async function fetchGraphQL<T>(query: string, variables: Record<string, unknown>
 }
 
 const FAVORITES_LIST_QUERY = `
-  query favoritesLists {
-    favoritesLists {
-      allFavorites {
-        idHash
+  query myFavoriteList {
+    myCreatedFavoriteList {
+      favorites {
+        slug
+        name
       }
     }
   }
@@ -70,8 +71,8 @@ const FAVORITE_COUNT_QUERY = `
 `
 
 interface FavoritesResponse {
-  favoritesLists: {
-    allFavorites: FavoriteList[]
+  myCreatedFavoriteList: {
+    favorites: FavoriteList[]
   }
 }
 
@@ -89,11 +90,11 @@ interface FavoriteCountResponse {
 
 export async function fetchFavoriteId(): Promise<string> {
   const data = await fetchGraphQL<FavoritesResponse>(FAVORITES_LIST_QUERY)
-  const allFavorites = data.favoritesLists.allFavorites
-  if (!allFavorites || allFavorites.length === 0) {
+  const favorites = data.myCreatedFavoriteList.favorites
+  if (!favorites || favorites.length === 0) {
     throw new Error('No favorites list found')
   }
-  return allFavorites[0].idHash
+  return favorites[0].slug
 }
 
 export async function fetchFavoriteProblems(favoriteSlug: string): Promise<LeetCodeProblem[]> {
