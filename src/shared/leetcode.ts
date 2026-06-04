@@ -38,9 +38,20 @@ async function fetchGraphQL<T>(query: string, variables: Record<string, unknown>
   return data.data
 }
 
-const FAVORITES_LIST_QUERY = `
-  query myFavoriteList {
+const CREATED_FAVORITE_LIST_QUERY = `
+  query myCreatedFavoriteList {
     myCreatedFavoriteList {
+      favorites {
+        slug
+        name
+      }
+    }
+  }
+`
+
+const COLLECTED_FAVORITE_LIST_QUERY = `
+  query myCollectedFavoriteList {
+    myCollectedFavoriteList {
       favorites {
         slug
         name
@@ -70,8 +81,14 @@ const FAVORITE_COUNT_QUERY = `
   }
 `
 
-interface FavoritesResponse {
+interface CreatedFavoritesResponse {
   myCreatedFavoriteList: {
+    favorites: FavoriteList[]
+  }
+}
+
+interface CollectedFavoritesResponse {
+  myCollectedFavoriteList: {
     favorites: FavoriteList[]
   }
 }
@@ -88,13 +105,14 @@ interface FavoriteCountResponse {
   }
 }
 
-export async function fetchFavoriteId(): Promise<string> {
-  const data = await fetchGraphQL<FavoritesResponse>(FAVORITES_LIST_QUERY)
-  const favorites = data.myCreatedFavoriteList.favorites
-  if (!favorites || favorites.length === 0) {
-    throw new Error('No favorites list found')
-  }
-  return favorites[0].slug
+export async function fetchCreatedLists(): Promise<FavoriteList[]> {
+  const data = await fetchGraphQL<CreatedFavoritesResponse>(CREATED_FAVORITE_LIST_QUERY)
+  return data.myCreatedFavoriteList.favorites ?? []
+}
+
+export async function fetchCollectedLists(): Promise<FavoriteList[]> {
+  const data = await fetchGraphQL<CollectedFavoritesResponse>(COLLECTED_FAVORITE_LIST_QUERY)
+  return data.myCollectedFavoriteList.favorites ?? []
 }
 
 export async function fetchFavoriteProblems(favoriteSlug: string): Promise<LeetCodeProblem[]> {
@@ -102,11 +120,6 @@ export async function fetchFavoriteProblems(favoriteSlug: string): Promise<LeetC
     favoriteSlug,
   })
   return data.favoriteQuestionList.questions
-}
-
-export async function fetchAllFavoritedProblems(): Promise<LeetCodeProblem[]> {
-  const favoriteId = await fetchFavoriteId()
-  return fetchFavoriteProblems(favoriteId)
 }
 
 export async function fetchFavoriteCount(favoriteSlug: string): Promise<number> {

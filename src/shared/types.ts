@@ -9,3 +9,9 @@ export interface FavoriteList {
   slug: string
   name: string
 }
+
+export interface ActiveList {
+  slug: string
+  name: string
+  type: 'created' | 'collected'
+}

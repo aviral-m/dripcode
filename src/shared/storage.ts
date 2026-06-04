@@ -1,4 +1,4 @@
-import type { LeetCodeProblem } from './types'
+import type { ActiveList, LeetCodeProblem } from './types'
 
 const KEYS = {
   POOL: 'dripcode_pool',
@@ -7,6 +7,8 @@ const KEYS = {
   BATCH_SIZE: 'dripcode_batch_size',
   LAST_SYNC_TIMESTAMP: 'dripcode_last_sync_timestamp',
   LAST_SYNC_COUNT: 'dripcode_last_sync_count',
+  ACTIVE_LIST: 'dripcode_active_list',
+  LAST_LIST_SLUG: 'dripcode_last_list_slug',
 }
 
 export async function loadPool(): Promise<LeetCodeProblem[]> {
@@ -109,4 +111,22 @@ export async function syncFavorites(
   ])
 
   return { newPool, newLastDraw }
+}
+
+export async function saveActiveList(list: ActiveList | null): Promise<void> {
+  await chrome.storage.local.set({ [KEYS.ACTIVE_LIST]: list })
+}
+
+export async function loadActiveList(): Promise<ActiveList | null> {
+  const result = await chrome.storage.local.get(KEYS.ACTIVE_LIST)
+  return (result[KEYS.ACTIVE_LIST] as ActiveList) ?? null
+}
+
+export async function saveLastListSlug(slug: string): Promise<void> {
+  await chrome.storage.local.set({ [KEYS.LAST_LIST_SLUG]: slug })
+}
+
+export async function loadLastListSlug(): Promise<string | null> {
+  const result = await chrome.storage.local.get(KEYS.LAST_LIST_SLUG)
+  return (result[KEYS.LAST_LIST_SLUG] as string) ?? null
 }
