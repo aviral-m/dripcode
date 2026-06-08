@@ -52,6 +52,7 @@ function App() {
         <ListSelectionView
           activeListSlug={activeList?.slug ?? null}
           onSelectList={handleSelectList}
+          showHelp={showHelp}
         />
       ) : (
         <DrawingView

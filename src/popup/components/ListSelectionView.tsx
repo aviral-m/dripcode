@@ -53,11 +53,13 @@ function ListSection({
 interface ListSelectionViewProps {
   activeListSlug: string | null;
   onSelectList: (list: ActiveList) => void;
+  showHelp: boolean;
 }
 
 function ListSelectionView({
   activeListSlug,
   onSelectList,
+  showHelp,
 }: ListSelectionViewProps) {
   const [createdLists, setCreatedLists] = useState<FavoriteList[]>([]);
   const [collectedLists, setCollectedLists] = useState<FavoriteList[]>([]);
@@ -127,10 +129,19 @@ function ListSelectionView({
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <p className="text-sm text-[var(--muted)]">
-        Select a list to draw problems from:
-      </p>
+    <div className="flex flex-col gap-5 overflow-y-auto max-h-[320px] custom-scrollbar pr-2">
+      {showHelp && (
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-xs text-[var(--muted)] space-y-1.5">
+          <p>
+            <strong className="text-[var(--foreground)]">My Lists</strong> —{" "}
+            Problem playlists you have made on LeetCode
+          </p>
+          <p>
+            <strong className="text-[var(--foreground)]">Saved by Me</strong> —{" "}
+            Problem playlists made by others that you have saved
+          </p>
+        </div>
+      )}
 
       {createdLists.length > 0 && (
         <ListSection
