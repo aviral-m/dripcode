@@ -15,3 +15,9 @@ export interface ActiveList {
   name: string
   type: 'created' | 'collected'
 }
+
+export interface ReminderSettings {
+  enabled: boolean
+  hour: number
+  minute: number
+}

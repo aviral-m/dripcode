@@ -1,4 +1,4 @@
-import type { ActiveList, LeetCodeProblem } from "./types";
+import type { ActiveList, LeetCodeProblem, ReminderSettings } from "./types";
 
 const KEYS = {
   POOL: "dripcode_pool",
@@ -9,6 +9,7 @@ const KEYS = {
   LAST_SYNC_COUNT: "dripcode_last_sync_count",
   ACTIVE_LIST: "dripcode_active_list",
   LAST_LIST_SLUG: "dripcode_last_list_slug",
+  REMINDER_SETTINGS: "dripcode_reminder_settings",
 };
 
 export async function loadPool(): Promise<LeetCodeProblem[]> {
@@ -128,4 +129,22 @@ export async function saveLastListSlug(slug: string): Promise<void> {
 export async function loadLastListSlug(): Promise<string | null> {
   const result = await chrome.storage.local.get(KEYS.LAST_LIST_SLUG);
   return (result[KEYS.LAST_LIST_SLUG] as string) ?? null;
+}
+
+const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
+  enabled: false,
+  hour: 9,
+  minute: 0,
+};
+
+export async function loadReminderSettings(): Promise<ReminderSettings> {
+  const result = await chrome.storage.local.get(KEYS.REMINDER_SETTINGS);
+  return (result[KEYS.REMINDER_SETTINGS] as ReminderSettings) ?? DEFAULT_REMINDER_SETTINGS;
+}
+
+export async function saveReminderSettings(
+  settings: ReminderSettings,
+): Promise<void> {
+  await chrome.storage.local.set({ [KEYS.REMINDER_SETTINGS]: settings });
+  await chrome.runtime.sendMessage({ type: "SET_REMINDER", settings }).catch(() => {});
 }

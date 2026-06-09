@@ -4,6 +4,7 @@ import {
   fetchCreatedLists,
   fetchCollectedLists,
 } from "../../shared/leetcode";
+import ReminderSettings from "./ReminderSettings";
 
 interface ListSectionProps {
   title: string;
@@ -129,39 +130,43 @@ function ListSelectionView({
   }
 
   return (
-    <div className="flex flex-col gap-5 overflow-y-auto max-h-[320px] custom-scrollbar pr-2">
-      {showHelp && (
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-xs text-[var(--muted)] space-y-1.5">
-          <p>
-            <strong className="text-[var(--foreground)]">My Lists</strong> —{" "}
-            Problem playlists you have made on LeetCode
-          </p>
-          <p>
-            <strong className="text-[var(--foreground)]">Saved by Me</strong> —{" "}
-            Problem playlists made by others that you have saved
-          </p>
-        </div>
-      )}
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-5 overflow-y-auto max-h-[320px] custom-scrollbar pr-2">
+        {showHelp && (
+          <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-xs text-[var(--muted)] space-y-1.5">
+            <p>
+              <strong className="text-[var(--foreground)]">My Lists</strong> —{" "}
+              Problem playlists you have made on LeetCode
+            </p>
+            <p>
+              <strong className="text-[var(--foreground)]">Saved by Me</strong> —{" "}
+              Problem playlists made by others that you have saved
+            </p>
+          </div>
+        )}
 
-      {createdLists.length > 0 && (
-        <ListSection
-          title="My Lists"
-          lists={createdLists}
-          type="created"
-          activeSlug={activeListSlug}
-          onSelectList={onSelectList}
-        />
-      )}
+        {createdLists.length > 0 && (
+          <ListSection
+            title="My Lists"
+            lists={createdLists}
+            type="created"
+            activeSlug={activeListSlug}
+            onSelectList={onSelectList}
+          />
+        )}
 
-      {collectedLists.length > 0 && (
-        <ListSection
-          title="Saved by Me"
-          lists={collectedLists}
-          type="collected"
-          activeSlug={activeListSlug}
-          onSelectList={onSelectList}
-        />
-      )}
+        {collectedLists.length > 0 && (
+          <ListSection
+            title="Saved by Me"
+            lists={collectedLists}
+            type="collected"
+            activeSlug={activeListSlug}
+            onSelectList={onSelectList}
+          />
+        )}
+      </div>
+
+      <ReminderSettings />
     </div>
   );
 }

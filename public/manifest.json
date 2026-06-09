@@ -3,7 +3,7 @@
   "name": "DripCode",
   "version": "1.0.0",
   "description": "LeetCode Daily Playlist Randomizer",
-  "permissions": ["cookies", "storage"],
+  "permissions": ["cookies", "storage", "alarms", "notifications"],
   "host_permissions": ["https://leetcode.com/*"],
   "background": {
     "service_worker": "background.js"
