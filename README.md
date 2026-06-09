@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# DripCode
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Chrome extension that randomizes your LeetCode favorites into daily practice batches. Uses a deck-of-cards model: drawn problems are removed from the pool until you reset.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Draw random problems from any LeetCode favorites list
+- Configurable drip size (1–10 problems per draw)
+- Pool tracking — shows remaining problems at a glance
+- Sync with LeetCode to pick up new favorites
+- Daily reminder notifications
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 18+
+- npm
 
-## Expanding the ESLint configuration
+## Setup & Build
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Output goes to `dist/`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Install in Chrome
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Go to `chrome://extensions`
+2. Enable **Developer mode** (top right)
+3. Click **Load unpacked**
+4. Select the `dist/` folder
+
+The extension icon will appear in your toolbar. Pin it for quick access.
+
+## Usage
+
+1. Click the DripCode icon in the toolbar
+2. Sign in to LeetCode (if prompted) — the extension reads your cookies for auth
+3. Select a favorites list
+4. Adjust drip size with the gear icon (default: 3)
+5. Click **Drip** to draw problems — each opens in a new background tab
+6. Use **Reset pool** to return all problems to the pool
+7. Click **Sync with LeetCode** to refresh from your favorites
+
+## Development
+
+```bash
+npm run dev     # Vite dev server with HMR
+npm run build   # TypeScript check + production build
+npm run lint    # ESLint
 ```
+
+### Icons
+
+```bash
+npm run generate-icons
+```
+
+Reads `public/icons/icon.svg` and outputs 16×16, 48×48, and 128×128 PNGs.
