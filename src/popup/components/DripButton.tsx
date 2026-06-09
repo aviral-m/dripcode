@@ -1,10 +1,10 @@
-interface DrawButtonProps {
+interface DripButtonProps {
   disabled: boolean
   loading: boolean
   onClick: () => void
 }
 
-function DrawButton({ disabled, loading, onClick }: DrawButtonProps) {
+function DripButton({ disabled, loading, onClick }: DripButtonProps) {
   return (
     <button
       onClick={onClick}
@@ -13,9 +13,9 @@ function DrawButton({ disabled, loading, onClick }: DrawButtonProps) {
                  hover:bg-lc-orange-hover disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400
                  transition-colors cursor-pointer disabled:cursor-not-allowed"
     >
-      {loading ? 'Drawing...' : 'Draw'}
+      {loading ? 'Dripping...' : 'Drip'}
     </button>
   )
 }
 
-export default DrawButton
+export default DripButton

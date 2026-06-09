@@ -19,7 +19,7 @@ import {
   fetchFavoriteProblems,
   fetchFavoriteCount,
 } from "../../shared/leetcode";
-import DrawButton from "./DrawButton";
+import DripButton from "./DripButton";
 import ProblemCard from "./ProblemCard";
 import Settings from "./Settings";
 import FlipNumber from "./FlipNumber";
@@ -130,7 +130,7 @@ function DrawingView({
         ),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Draw failed");
+      setError(err instanceof Error ? err.message : "Drip failed");
     } finally {
       setDrawing(false);
     }
@@ -278,7 +278,7 @@ function DrawingView({
       )}
 
       <div className="flex flex-col gap-2">
-        <DrawButton
+        <DripButton
           disabled={poolEmpty}
           loading={drawing}
           onClick={handleDraw}
@@ -315,7 +315,7 @@ function DrawingView({
       {lastDraw.length > 0 && (
         <div className="flex flex-col gap-2">
           <h2 className="text-sm font-semibold text-[var(--foreground)]">
-            Last Draw
+            Last Drip
           </h2>
           <div className="flex flex-col gap-2">
             {lastDraw.map((problem) => (
