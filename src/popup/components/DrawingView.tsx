@@ -35,11 +35,7 @@ const categoryLabels: Record<ActiveList["type"], string> = {
   collected: "Saved by Me",
 };
 
-function DrawingView({
-  activeList,
-  onBack,
-  showHelp,
-}: DrawingViewProps) {
+function DrawingView({ activeList, onBack, showHelp }: DrawingViewProps) {
   const [pool, setPool] = useState<LeetCodeProblem[]>([]);
   const [allProblems, setAllProblems] = useState<LeetCodeProblem[]>([]);
   const [lastDraw, setLastDraw] = useState<LeetCodeProblem[]>([]);
@@ -110,8 +106,57 @@ function DrawingView({
   }, [activeList.slug, checkForChanges]);
 
   useEffect(() => {
-    init();
-  }, [init]);
+    let cancelled = false;
+    (async () => {
+      try {
+        setError(null);
+        const [
+          poolData,
+          allData,
+          lastDrawData,
+          size,
+          lastSyncCount,
+          lastListSlug,
+        ] = await Promise.all([
+          loadPool(),
+          loadAllProblems(),
+          getLastDraw(),
+          getBatchSize(),
+          loadLastSyncCount(),
+          loadLastListSlug(),
+        ]);
+        if (cancelled) return;
+        setBatchSizeState(size);
+        if (lastListSlug !== activeList.slug || allData.length === 0) {
+          const problems = await fetchFavoriteProblems(activeList.slug);
+          if (cancelled) return;
+          setAllProblems(problems);
+          setPool(problems);
+          setLastDraw([]);
+          await saveAllProblems(problems);
+          await savePool(problems);
+          await chrome.storage.local.remove("dripcode_last_draw");
+          await saveLastListSlug(activeList.slug);
+        } else {
+          setPool(poolData);
+          setAllProblems(allData);
+          setLastDraw(lastDrawData);
+          checkForChanges(lastSyncCount);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [activeList.slug, checkForChanges]);
 
   const handleDraw = async () => {
     try {
@@ -223,9 +268,7 @@ function DrawingView({
           ← Back to lists
         </button>
         <div className="rounded-lg border border-[var(--border)] p-6 text-center">
-          <p className="text-sm text-[var(--muted)]">
-            This list is empty.
-          </p>
+          <p className="text-sm text-[var(--muted)]">This list is empty.</p>
           <a
             href="https://leetcode.com/problems/"
             target="_blank"
@@ -267,8 +310,8 @@ function DrawingView({
         <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 text-xs text-[var(--muted)] space-y-1.5">
           <p>
             <strong className="text-[var(--foreground)]">{pool.length}</strong>{" "}
-            problem{pool.length !== 1 ? "s" : ""} in the pool — problems
-            not yet drawn from <strong>{activeList.name}</strong>
+            problem{pool.length !== 1 ? "s" : ""} in the pool — problems not yet
+            drawn from <strong>{activeList.name}</strong>
           </p>
           <p>
             <strong className="text-[var(--foreground)]">{batchSize}</strong>{" "}

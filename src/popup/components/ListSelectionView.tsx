@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { ActiveList, FavoriteList } from "../../shared/types";
 import {
   fetchCreatedLists,
@@ -67,7 +67,7 @@ function ListSelectionView({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadLists = async () => {
+  const loadLists = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -82,10 +82,36 @@ function ListSelectionView({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadLists();
+    let cancelled = false;
+    (async () => {
+      try {
+        setError(null);
+        const [created, collected] = await Promise.all([
+          fetchCreatedLists(),
+          fetchCollectedLists(),
+        ]);
+        if (!cancelled) {
+          setCreatedLists(created);
+          setCollectedLists(collected);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error ? err.message : "Failed to load lists",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {
